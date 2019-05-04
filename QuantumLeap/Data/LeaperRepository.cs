@@ -26,7 +26,7 @@ namespace QuantumLeap.Data
                     return newLeaper;
                 }
             }
-            throw new System.Exception("No leaper found");
+            throw new System.Exception("No leaper found.");
         }
     }
 }
