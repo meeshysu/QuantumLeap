@@ -18,7 +18,7 @@ namespace QuantumLeap.Data
             using (var database = new SqlConnection(ConnectionString))
             {
                 var newEvent = database.QueryFirstOrDefault<Event>(
-                    @"Insert into Events(Name, EventDate, EventLocation, NameOfEvent)
+                      @"Insert into Events(Name, EventDate, EventLocation, NameOfEvent)
                       Output inserted.*
                       Values(@Name, @EventDate, @EventLocation, @NameOfEvent)",
                       new { name, eventDate, eventLocation, nameOfEvent });
@@ -29,6 +29,17 @@ namespace QuantumLeap.Data
                 }
             }
             throw new System.Exception("No event found.");
+        }
+
+        public IEnumerable<Event> GetAllEvents()
+        {
+            using (var database = new SqlConnection(ConnectionString))
+            {
+                var sequelEvents = "Select * from Events";
+                var events = database.Query<Event>(sequelEvents);
+                return events;
+            }
+            throw new Exception("No event found.");
         }
     }
 }
