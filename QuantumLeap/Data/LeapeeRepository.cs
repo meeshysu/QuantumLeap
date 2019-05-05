@@ -29,5 +29,16 @@ namespace QuantumLeap.Data
             }
             throw new System.Exception("No leapee found.");
         }
+
+        public IEnumerable<Leapee> GetAllLeapees()
+        {
+            using (var database = new SqlConnection(ConnectionString))
+            {
+                var sequelLeapees = "Select * from Leapees";
+                var leapees = database.Query<Leapee>(sequelLeapees);
+                return leapees;
+            }
+            throw new Exception("No leapees found.");
+        }
     }
 }
