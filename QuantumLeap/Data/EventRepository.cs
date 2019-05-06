@@ -13,7 +13,7 @@ namespace QuantumLeap.Data
 
         const string ConnectionString = "Server=localhost;Database=QuantumLeap;Trusted_Connection=True;";
 
-        public Event AddEvent(string name, int eventDate, string eventLocation, string nameOfEvent)
+        public Event AddEvent(string name, DateTime eventDate, string eventLocation, string nameOfEvent)
         {
             using (var database = new SqlConnection(ConnectionString))
             {

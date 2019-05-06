@@ -8,7 +8,7 @@ namespace QuantumLeap.Models
     public class CreateEventRequest
     {
         public string Name { get; set; }
-        public int EventTime { get; set; }
+        public DateTime EventTime { get; set; }
         public string EventLocation { get; set; }
         public string NameOfEvent { get; set; }
     }
