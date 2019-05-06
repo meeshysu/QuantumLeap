@@ -24,7 +24,12 @@ namespace QuantumLeap.Data
                                                                       @"select top 1 id, name, age, gender
                                                                       from Leapees le
                                                                       order by newid()");
+
+                var randomEvent = database.QueryFirstOrDefault<Leap>(
+                                                                      @"select top 1 dateadd(day, rand() * datediff(day, @datestart, @dateend), @datestart)
+                                                                      from Events e");
             }
-        }
+            throw new System.Exception("Leap didn't work.");
+        }   
     }
 }
