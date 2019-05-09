@@ -15,18 +15,30 @@ namespace QuantumLeap.Controllers
     public class LeapController : ControllerBase
     {
         readonly LeapRepository _leapRepository;
-        readonly CreateLeapRequestValidator _validator;
 
-        public LeapController()
+        [HttpGet]
+        public ActionResult RetrieveAllEventsAndLeaperInfo()
         {
-            _leapRepository = new LeapRepository();
-            _validator = new CreateLeapRequestValidator();
+            var repository = new LeapRepository();
+            var retrieveLeap = repository.RetrieveAllEventsAndLeaperInfo();
+            return Ok(retrieveLeap);
         }
 
         [HttpPost]
-        public ActionResult AddLeap(CreateLeapRequest createRequest)
+        public ActionResult AddLeaper(CreateLeapRequest createRequest)
         {
-            var newLeap = _leapRepository.AddLeap(createRequest.Cost);
+            var repository = new LeapRepository();
+            var randomLeaper = repository.GetRandomLeaper();
+
+            if (randomLeaper.BudgetAmount > createRequest.Cost)
+            {
+                var newLeap = repository.LeapAndBudget(leaperId, leapeeId, eventId, createRequest.Cost);
+                return Created($"api/leapers/{newLeaper.Id}", newLeaper);
+            }
+            else
+            {
+                return BadRequest("Sorry you do not have enough of a budget to leap.");
+            }
         }
     }
 }
