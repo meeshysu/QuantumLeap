@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using QuantumLeap.Models;
 
 namespace QuantumLeap.Data
 {
@@ -11,25 +12,55 @@ namespace QuantumLeap.Data
     {
         const string ConnectionString = "Server=localhost;Database=QuantumLeap;Trusted_Connection=True;";
 
-        public Leap AddLeap(decimal cost, int leaperId, int leapeeId, int eventId)
+        public Leaper GetRandomLeaper()
         {
             using (var database = new SqlConnection(ConnectionString))
             {
-                var randomLeaper = database.QueryFirstOrDefault<Leap>(
+                var randomLeaper = database.QueryFirstOrDefault<Leaper>(
                                                                       @"select top 1 id, name, budgetamount
                                                                       from Leapers l
                                                                       order by newid()");
 
-                var randomLeapee = database.QueryFirstOrDefault<Leap>(
+                return randomLeaper;
+            }
+        } 
+
+        public Leapee GetRandomLeapee()
+        {
+            using (var database = new SqlConnection(ConnectionString))
+            {
+                var randomLeapee = database.QueryFirstOrDefault<Leapee>(
                                                                       @"select top 1 id, name, age, gender
                                                                       from Leapees le
                                                                       order by newid()");
-
-                var randomEvent = database.QueryFirstOrDefault<Leap>(
-                                                                      @"select top 1 dateadd(day, rand() * datediff(day, @datestart, @dateend), @datestart)
-                                                                      from Events e");
+                return randomLeapee;
             }
-            throw new System.Exception("Leap didn't work.");
-        }   
+        }
+
+        public Event GetRandomEvent()
+        {
+            using (var database = new SqlConnection(ConnectionString))
+            {
+                var randomEvent = database.QueryFirstOrDefault<Event>(
+                                                                     @"select top 1 dateadd(day, rand() * datediff(day, @datestart, @dateend), @datestart) as RandomEvent, lp.Name as LeaperName, lps.Name as LeapeeName
+                                                                     from Events e
+                                                                     join Leapers lp
+                                                                     on lp.Name = e.Name
+                                                                     join Leapees lps
+                                                                     on e.Id = lps.Id");
+
+                return randomEvent;
+            }
+        }
     }
 }
+
+
+                                                                     
+
+
+
+//var insertLeap = database.QueryFirstOrDefault<Leap>(
+//                                                      @"Insert into Leap(leaperId, leapeeId, eventId, cost)
+//                                                                      output inserted.*
+//                                                                      values(@leaperId, @eventId, @leapeeId, @cost)");
