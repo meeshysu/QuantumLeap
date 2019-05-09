@@ -26,10 +26,7 @@ namespace QuantumLeap.Controllers
         [HttpPost]
         public ActionResult AddLeap(CreateLeapRequest createRequest)
         {
-            if (_validator.Validate(createRequest))
-            {
-                return BadRequest(new { error = "users must have a leap..." });
-            }
+            var newLeap = _leapRepository.AddLeap(createRequest.Cost);
         }
     }
 }

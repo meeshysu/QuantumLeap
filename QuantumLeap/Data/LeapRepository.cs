@@ -52,6 +52,21 @@ namespace QuantumLeap.Data
                 return randomEvent;
             }
         }
+
+        public Event RetrieveEventAndLeaperInfo()
+        {
+            using (var database = new SqlConnection(ConnectionString))
+            {
+                var retrieveDataBasedOnEvents = database.QueryFirstOrDefault<Event>(
+                                                                                    @"select top 1 e.NameOfEvent, e.EventLocation, lpr.Name as LeaperName, lps.Name as LeapeesName, e.EventDate, lpr.BudgetAmount
+                                                                                    from Leapers lpr
+                                                                                    join Events e
+                                                                                    on e.Name = lpr.Name
+                                                                                    join Leapees lps
+                                                                                    on e.Id = lps.Id");
+                return retrieveDataBasedOnEvents;
+            }
+        }
     }
 }
 
