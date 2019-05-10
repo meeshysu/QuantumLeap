@@ -20,24 +20,27 @@ namespace QuantumLeap.Controllers
         public ActionResult RetrieveAllEventsAndLeaperInfo()
         {
             var repository = new LeapRepository();
-            var retrieveLeap = repository.RetrieveAllEventsAndLeaperInfo();
+            var retrieveLeap = repository.RetrieveEventAndLeaperInfo();
             return Ok(retrieveLeap);
         }
 
         [HttpPost]
-        public ActionResult AddLeaper(CreateLeapRequest createRequest)
+        public ActionResult AddLeapee(CreateLeapRequest createRequest)
         {
             var repository = new LeapRepository();
             var randomLeaper = repository.GetRandomLeaper();
+            int @leaperId = randomLeaper.Id;
+            int @leapeeId = repository.GetRandomLeapee().Id;
+            int @eventId = 0;
 
-            if (randomLeaper.BudgetAmount > createRequest.Cost)
+            if(randomLeaper.BudgetAmount > createRequest.Cost)
             {
-                var newLeap = repository.LeapAndBudget(leaperId, leapeeId, eventId, createRequest.Cost);
-                return Created($"api/leapers/{newLeaper.Id}", newLeaper);
+                var newLeap = repository.RetrieveUpdatedBudgetFromLeap(leaperId, leapeeId, eventId, createRequest.Cost);
+                return Created($"api/leap/{newLeap.Id}", newLeap);
             }
             else
             {
-                return BadRequest("Sorry you do not have enough of a budget to leap.");
+                return BadRequest("Sorry, you don't have enough money to leap.");
             }
         }
     }

@@ -68,13 +68,26 @@ namespace QuantumLeap.Data
             }
         }
 
-        public Event RetrieveAllEventsAndLeaperInfo()
+        public Leap RetrieveUpdatedBudgetFromLeap(int leaperId, int leapeeId, int eventId, decimal cost)
         {
             using (var database = new SqlConnection(ConnectionString))
             {
-                var retrieveDataBasedOnAllEvents = database.QueryFirstOrDefault<Event>();
+                var retrieveUpdatedBudget = @"Insert into Leap (LeaperId, LeapeeId, EventId, Cost)
+                                             Output inserted.*
+                                             Values (@leaperId, @leapeeId, @eventId, @cost";
+                                             var newOperator = new { leaperId, leapeeId, eventId, cost };
+                                             var newLeap = database.QueryFirstOrDefault<Leap>(retrieveUpdatedBudget, newOperator);
 
-                return retrieveDataBasedOnAllEvents;
+                if (newLeap != null)
+                {
+                    var updateLeapers = @"update Leapers 
+                                        set BudgetAmount = BudgetAmount - @newCost
+                                        where id = @updatedLeaper";
+                                        
+                    var updateOperator = new { leaperId, cost };
+                    var updateLeaper = database.Execute(updateLeapers, updateOperator);
+                }
+                return newLeap;
             }
         }
     }
